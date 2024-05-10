@@ -1,4 +1,6 @@
-require('dotenv').config()
+const dotenv = require('dotenv');
+dotenv.config({ path: './secrets.env' })
+
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -7,7 +9,7 @@ const logger = require('morgan');
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
-const mongoDB = process.env.MONGO_URL;
+const mongoDB = process.env.MONGO_URI;
 
 main().catch((err) => console.log(err));
 async function main() {

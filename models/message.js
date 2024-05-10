@@ -7,4 +7,4 @@ const MessageSchema = new Schema({
   user: {type: Schema.Types.ObjectId, ref: "Person", required: true}
 });
 
-module.exports = mongoose.model("Person", PersonSchema);
+module.exports = mongoose.model("Message", MessageSchema);
