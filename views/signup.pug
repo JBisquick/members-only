@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  h1= title
+
+  form(method='POST')
+    div
+      label(for='full_name') Full Name: 
+      input#full_name(type="text" placeholder="Jane Doe" name="full_name" required)
+    div
+      label(for='user_name') Username: 
+      input#user_name(type="text" placeholder="SillyNut69" name="user_name" required)
+    div
+      label(for='password') Password: 
+      input#password(type="password" name="password" required)
+    div
+      label(for='conf_password') Confirm Password: 
+      input#conf_password(type="password" name="conf_password" required)
+    button.btn(type='submit') Sign Up
+  
+  if errors 
+    ul 
+      for error in errors 
+        li!= error.msg
