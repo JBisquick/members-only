@@ -4,6 +4,7 @@ const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require("express-validator");
 const Person = require("../models/person");
 const bcrypt = require("bcryptjs");
+const passport = require("passport");
 
 /* GET home page. */
 router.get('/',  asyncHandler(async (req, res, next) => {
@@ -31,7 +32,6 @@ router.post('/sign-up', [
     .escape(),
   body('conf_password')
     .custom((value, { req }) => {
-      console.log(value === req.body.password);
       return value === req.body.password;
     })
     .withMessage('Passwords do not match')
@@ -51,8 +51,8 @@ router.post('/sign-up', [
     })
 
     if (!errors.isEmpty()) {
-      res.render("signup",{
-        title: "Sign Up",
+      res.render('signup', {
+        title: 'Sign Up',
         errors: errors.array(),
       })
       return;
@@ -64,12 +64,19 @@ router.post('/sign-up', [
 ]);
 
 router.get('/log-in', asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Log In Page");
+  res.render('login', {
+    title: 'Log In',
+    user: req.user
+  });
 }));
 
-router.post('/log-in', asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Log In Page");
-}));
+router.post(
+  "/log-in",
+  passport.authenticate("local", {
+    successRedirect: "/log-in",
+    failureRedirect: "/log-in"
+  })
+);
 
 router.get('/join-club', asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Join Club Page");

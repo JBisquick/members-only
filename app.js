@@ -4,8 +4,14 @@ dotenv.config({ path: './secrets.env' })
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
+const session = require("express-session");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+const bcrypt = require("bcryptjs");
+
+const Person = require('./models/person');
 
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
@@ -25,6 +31,43 @@ const app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+app.use(session({ secret: process.env.SECRET , resave: false, saveUninitialized: true }));
+app.use(passport.session());
+app.use(express.urlencoded({ extended: false }));
+
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      const user = await Person.findOne({user_name: username});
+      if (!user) {
+        return done(null, false)
+      }
+      const match = await bcrypt.compare(password, user.password);
+
+      if (!match) {
+        return done(null, false)
+      }
+
+      return done(null, user);
+    } catch(err) {
+      return done(err);
+    };
+  }) 
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await Person.findById(id);
+    done(null, user);
+  } catch(err) {
+    done(err);
+  };
+});
 
 app.use(logger('dev'));
 app.use(express.json());
