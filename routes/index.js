@@ -12,7 +12,7 @@ router.get('/',  asyncHandler(async (req, res, next) => {
 }));
 
 router.get('/sign-up', asyncHandler(async (req, res, next) => {
-  res.render('signup', { title: 'Sign Up', user: req.user });
+  res.render('signup', { title: 'Sign Up' });
 }));
 
 router.post('/sign-up', [
@@ -65,8 +65,7 @@ router.post('/sign-up', [
 
 router.get('/log-in', asyncHandler(async (req, res, next) => {
   res.render('login', {
-    title: 'Log In',
-    user: req.user
+    title: 'Log In'
   });
 }));
 

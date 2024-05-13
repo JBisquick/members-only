@@ -1,8 +1,8 @@
 extends layout
 
 block content
-  if user 
-    h1 Welcome back #{user.full_name}
+  if currentUser 
+    h1 Welcome back #{currentUser.full_name}
     div
       a(href='/log-out') Log Out
   else 
