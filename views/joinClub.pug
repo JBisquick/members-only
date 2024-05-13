@@ -1,0 +1,14 @@
+extends layout
+
+block content 
+  h1= title
+  form(method='POST')
+    div
+      label(for='member_code') Membership Code: 
+      input#member_code(type="text" name="member_code" required)
+    button.btn(type='submit') Join Club
+  
+  if errors 
+    ul 
+      for error in errors 
+        li!= error.msg

@@ -1,3 +1,5 @@
+const dotenv = require('dotenv');
+dotenv.config({ path: './secrets.env' })
 const express = require('express');
 const router = express.Router();
 const asyncHandler = require('express-async-handler');
@@ -87,12 +89,39 @@ router.get('/log-out', (req, res, next) => {
 });
 
 router.get('/join-club', asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Join Club Page");
+  res.render('joinClub', {
+    title: 'Join Club'
+  });
 }));
 
-router.post('/join-club', asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Join Club Page");
-}));
+router.post('/join-club', [
+  body('member_code')
+    .trim()
+    .escape()
+    .custom(async(value,{req}) => {
+      if (value !== process.env.MEMBER){
+        throw new Error('Password is incorrect')
+      }
+      return true;
+    }),
+  
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.render('joinClub', {
+        title: 'Join Club',
+        errors: errors.array(),
+      })
+      return;
+    } else {
+      const personToUpdate = await Person.findOne({user_name: res.locals.currentUser.user_name});
+      personToUpdate.member_status = true;
+      await personToUpdate.save()
+      res.redirect('/');
+    }
+  })
+]);
 
 router.get('/create-message', asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Create Message Page");
