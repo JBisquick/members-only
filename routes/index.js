@@ -12,7 +12,7 @@ router.get('/',  asyncHandler(async (req, res, next) => {
 }));
 
 router.get('/sign-up', asyncHandler(async (req, res, next) => {
-  res.render('signup', { title: 'Sign Up' });
+  res.render('signup', { title: 'Sign Up', user: req.user });
 }));
 
 router.post('/sign-up', [
@@ -77,6 +77,15 @@ router.post(
     failureRedirect: "/log-in"
   })
 );
+
+router.get('/log-out', (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/log-in');
+  });
+});
 
 router.get('/join-club', asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Join Club Page");

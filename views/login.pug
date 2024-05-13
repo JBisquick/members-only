@@ -3,6 +3,8 @@ extends layout
 block content
   if user 
     h1 Welcome back #{user.full_name}
+    div
+      a(href='/log-out') Log Out
   else 
     h1= title
     form(action="/log-in" method='POST')
