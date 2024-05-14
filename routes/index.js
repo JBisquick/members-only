@@ -162,11 +162,37 @@ router.post('/create-message', [
 ]);
 
 router.get('/join-admin', asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Join Admin Page");
+  res.render('joinAdmin', { title: 'Join Admin' });
 }));
 
-router.post('/join-admin', asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Join Admin Page");
-}));
+router.post('/join-admin', [
+  body('admin_code')
+    .trim()
+    .escape()
+    .custom(async(value,{req}) => {
+      if (value !== process.env.ADMIN){
+        throw new Error('Password is incorrect')
+      }
+      return true;
+    }),
+  
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.render('joinAdmin', {
+        title: 'Join Admin',
+        errors: errors.array(),
+      })
+      return;
+    } else {
+      const personToUpdate = await Person.findOne({user_name: res.locals.currentUser.user_name});
+      personToUpdate.admin_status = true;
+      personToUpdate.member_status = true;
+      await personToUpdate.save()
+      res.redirect('/');
+    }
+  })
+]);
 
 module.exports = router;

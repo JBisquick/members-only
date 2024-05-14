@@ -1,0 +1,14 @@
+extends layout
+
+block content 
+  h1= title
+  form(method='POST')
+    div
+      label(for='admin_code') Admin Code: 
+      input#admin_code(type="text" name="admin_code" required)
+    button.btn(type='submit') Join Admin
+  
+  if errors 
+    ul 
+      for error in errors 
+        li!= error.msg
