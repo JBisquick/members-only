@@ -195,4 +195,11 @@ router.post('/join-admin', [
   })
 ]);
 
+router.get('/delete-message/:id', asyncHandler(async (req, res, next) => {
+  if (res.locals.currentUser.admin_status === true) {
+    await Message.findByIdAndDelete(req.params.id);
+  }
+  res.redirect('/');
+}))
+
 module.exports = router;
