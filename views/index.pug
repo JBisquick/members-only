@@ -3,5 +3,12 @@ extends layout
 block content
   h1= title
   if currentUser 
+    for message in messages  
+      p= message.text
+      if currentUser.member 
+        p= message.user.user_name
+        p= message.date_formatted
+      else
+        p Anonymous
   else 
     p You are not signed in! You do not have permission to see any messages.

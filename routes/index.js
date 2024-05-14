@@ -11,7 +11,12 @@ const passport = require("passport");
 
 /* GET home page. */
 router.get('/',  asyncHandler(async (req, res, next) => {
-  res.render('index', { title: 'Message Board' });
+  const allMessages = await Message.find({}).populate("user").exec();
+
+  res.render('index', { 
+    title: 'Message Board',
+    messages: allMessages
+  });
 }));
 
 router.get('/sign-up', asyncHandler(async (req, res, next) => {
