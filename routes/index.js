@@ -5,12 +5,13 @@ const router = express.Router();
 const asyncHandler = require('express-async-handler');
 const { body, validationResult } = require("express-validator");
 const Person = require("../models/person");
+const Message = require("../models/message");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
 
 /* GET home page. */
 router.get('/',  asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Index Page");
+  res.render('index', { title: 'Message Board' });
 }));
 
 router.get('/sign-up', asyncHandler(async (req, res, next) => {
@@ -124,12 +125,36 @@ router.post('/join-club', [
 ]);
 
 router.get('/create-message', asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Create Message Page");
+  res.render('createMessage', { title: 'Create Message' });
 }));
 
-router.post('/create-message', asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Create Message Page");
-}));
+router.post('/create-message', [
+  body('message')
+    .trim()
+    .isLength({ min: 1, max: 2000 })
+    .withMessage('Message is empty or too longer. Max character limit is 2000')
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const message = new Message({
+      text: req.body.message,
+      user: res.locals.currentUser._id,
+      date: new Date()
+    })
+
+    if (!errors.isEmpty()) {
+      res.render('createMessage', {
+        title: 'Create Message',
+        errors: errors.array(),
+      })
+      return;
+    } else {
+      await message.save();
+      res.redirect('/');
+  }})
+]);
 
 router.get('/join-admin', asyncHandler(async (req, res, next) => {
   res.send("NOT IMPLEMENTED: Join Admin Page");

@@ -7,19 +7,17 @@ html
     if currentUser
       div.header
         p
-          a(href='/') Home
+          a(href='/') Messages
         p
           a(href='/create-message') Create Message
-        p
-          a(href='/log-in') Log Out
         p
           a(href='/join-club') Join Club
         p
           a(href='/join-admin') Become Admin
+        p
+          a(href='/log-in') Log Out
     else 
       div.header
-        p
-          a(href='/') Home
         p
           a(href='/log-in') Log In
         p
